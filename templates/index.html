@@ -78,8 +78,6 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-
-
         .generate-btn {
             width: 100%;
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -164,6 +162,11 @@
             resize: vertical;
         }
 
+        .audio-section {
+            margin-top: 20px;
+            padding-top: 10px;
+        }
+
         .action-buttons {
             margin-top: 15px;
             display: flex;
@@ -222,7 +225,7 @@
     <div class="container">
         <div class="header">
             <h1>🎬 Educational Video Script Generator</h1>
-            <p>Create engaging educational scripts with AI</p>
+            <p>Create engaging educational scripts with AI + Audio</p>
         </div>
 
         <div class="content">
@@ -233,13 +236,13 @@
                 </div>
              
                 <button type="submit" class="generate-btn" id="generateBtn">
-                    ✨ Generate Script
+                    ✨ Generate Script & Audio
                 </button>
             </form>
 
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p>Creating your educational script...</p>
+                <p>Creating your educational script and audio...</p>
                 <small>This may take 10-30 seconds</small>
             </div>
 
@@ -249,7 +252,15 @@
                 </div>
                 
                 <textarea id="scriptOutput" class="script-output" readonly placeholder="Your generated script will appear here..."></textarea>
-                
+
+                <!-- 🔊 Audio Player -->
+                <div class="audio-section">
+                    <h3>🔊 Listen to the Script</h3>
+                    <audio id="audioPlayer" controls style="width:100%;">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+
                 <div class="action-buttons">
                     <button type="button" class="btn btn-copy" onclick="copyScript()">
                         📋 Copy Script
@@ -271,15 +282,14 @@
         const scriptOutput = document.getElementById('scriptOutput');
         const generateBtn = document.getElementById('generateBtn');
         const messageDiv = document.getElementById('message');
+        const audioPlayer = document.getElementById('audioPlayer');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const formData = new FormData(form);
             const data = {
-                topic: formData.get('topic').trim(),
-                duration: parseInt(formData.get('duration')),
-                audience: formData.get('audience')
+                topic: formData.get('topic').trim()
             };
 
             if (!data.topic) {
@@ -307,8 +317,13 @@
                 if (result.success) {
                     scriptOutput.value = result.script;
                     resultSection.style.display = 'block';
-                    showMessage('Script generated successfully! 🎉', 'success');
-                    
+                    showMessage('Script & Audio generated successfully! 🎉', 'success');
+
+                    // 👉 Set the audio file source
+                    audioPlayer.src = result.audio_url;
+                    audioPlayer.load();
+                    audioPlayer.play().catch(() => {}); // autoplay may be blocked, ignore
+
                     // Scroll to results
                     resultSection.scrollIntoView({ behavior: 'smooth' });
                 } else {
@@ -333,15 +348,14 @@
             resultSection.style.display = 'none';
             scriptOutput.value = '';
             messageDiv.innerHTML = '';
+            audioPlayer.src = '';
             form.reset();
-            document.getElementById('duration').value = '50';
         }
 
         function showMessage(text, type) {
             const className = type === 'error' ? 'error-message' : 'success-message';
             messageDiv.innerHTML = `<div class="${className}">${text}</div>`;
             
-            // Auto-hide success messages after 3 seconds
             if (type === 'success') {
                 setTimeout(() => {
                     messageDiv.innerHTML = '';
