@@ -82,5 +82,9 @@ logs/
 
 # Generated files
 runs/
-output/
+outputs/
+videos-output/
 generated_scripts/
+
+# Uploaded media files
+upload/

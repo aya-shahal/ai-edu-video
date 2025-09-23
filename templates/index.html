@@ -5,366 +5,146 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Educational Video Script Generator</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            min-height: 100vh; padding: 20px;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #ff6b6b, #feca57);
-            color: white;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-            font-size: 1.1em;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e8ed;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .generate-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 18px;
-            font-size: 1.2em;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 10px;
-        }
-
-        .generate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .generate-btn:disabled {
-            background: #cccccc;
-            transform: none;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 30px;
-            color: #666;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .result-section {
-            display: none;
-            margin-top: 30px;
-            padding: 25px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            border-left: 5px solid #667eea;
-        }
-
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .result-header h3 {
-            color: #333;
-            font-size: 1.3em;
-        }
-
-        .script-output {
-            width: 100%;
-            min-height: 200px;
-            padding: 15px;
-            border: 1px solid #e1e8ed;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            background: white;
-            resize: vertical;
-        }
-
-        .audio-section {
-            margin-top: 20px;
-            padding-top: 10px;
-        }
-
-        .action-buttons {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .btn-copy {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-copy:hover {
-            background: #218838;
-        }
-
-        .btn-clear {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-clear:hover {
-            background: #c82333;
-        }
-
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 5px solid #dc3545;
-            margin-top: 20px;
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 5px solid #28a745;
-            margin-top: 20px;
-        }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px;
+                     box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #ff6b6b, #feca57); color: white;
+                  text-align: center; padding: 40px 20px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .content { padding: 40px; }
+        .form-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 1.1em; }
+        input { width: 100%; padding: 15px; border: 2px solid #e1e8ed; border-radius: 10px;
+                font-size: 16px; background: #f8f9fa; }
+        input:focus { outline: none; border-color: #667eea; background: white;
+                      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .generate-btn { width: 100%; background: linear-gradient(135deg, #667eea, #764ba2);
+                        color: white; border: none; padding: 18px; font-size: 1.2em; border-radius: 12px;
+                        cursor: pointer; transition: all 0.3s ease; }
+        .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(102,126,234,0.3); }
+        .loading { display: none; text-align: center; padding: 30px; color: #666; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3;
+                   border-top: 5px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite;
+                   margin: 0 auto 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .result-section { display: none; margin-top: 30px; padding: 25px; background: #f8f9fa;
+                          border-radius: 12px; border-left: 5px solid #667eea; }
+        .script-output { width: 100%; min-height: 200px; padding: 15px; border: 1px solid #e1e8ed;
+                          border-radius: 8px; font-family: monospace; font-size: 14px; background: white; }
+        .audio-section, .video-section { margin-top: 20px; }
+        .error-message { margin-top: 20px; color: #721c24; background: #f8d7da;
+                          padding: 10px; border-radius: 8px; }
+        .success-message { margin-top: 20px; color: #155724; background: #d4edda;
+                            padding: 10px; border-radius: 8px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🎬 Educational Video Script Generator</h1>
-            <p>Create engaging educational scripts with AI + Audio</p>
-        </div>
-
-        <div class="content">
-            <form id="scriptForm">
-                <div class="form-group">
-                    <label for="topic">📚 Topic</label>
-                    <input type="text" id="topic" name="topic" placeholder="e.g., Photosynthesis, Ancient Rome, Machine Learning..." required>
-                </div>
-             
-                <button type="submit" class="generate-btn" id="generateBtn">
-                    ✨ Generate Script & Audio
-                </button>
-            </form>
-
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>Creating your educational script and audio...</p>
-                <small>This may take 10-30 seconds</small>
-            </div>
-
-            <div class="result-section" id="resultSection">
-                <div class="result-header">
-                    <h3>📝 Generated Script</h3>
-                </div>
-                
-                <textarea id="scriptOutput" class="script-output" readonly placeholder="Your generated script will appear here..."></textarea>
-
-                <!-- 🔊 Audio Player -->
-                <div class="audio-section">
-                    <h3>🔊 Listen to the Script</h3>
-                    <audio id="audioPlayer" controls style="width:100%;">
-                        Your browser does not support the audio element.
-                    </audio>
-                </div>
-
-                <div class="action-buttons">
-                    <button type="button" class="btn btn-copy" onclick="copyScript()">
-                        📋 Copy Script
-                    </button>
-                    <button type="button" class="btn btn-clear" onclick="clearResults()">
-                        🗑️ Clear
-                    </button>
-                </div>
-            </div>
-
-            <div id="message"></div>
-        </div>
+<div class="container">
+    <div class="header">
+        <h1>🎬 Educational Video Script Generator</h1>
+        <p>Create engaging educational scripts with AI + Audio + (optional) Video</p>
     </div>
 
-    <script>
-        const form = document.getElementById('scriptForm');
-        const loading = document.getElementById('loading');
-        const resultSection = document.getElementById('resultSection');
-        const scriptOutput = document.getElementById('scriptOutput');
-        const generateBtn = document.getElementById('generateBtn');
-        const messageDiv = document.getElementById('message');
-        const audioPlayer = document.getElementById('audioPlayer');
+    <div class="content">
+        <form id="scriptForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="topic">📚 Topic</label>
+                <input type="text" id="topic" name="topic" placeholder="e.g., Photosynthesis..." required>
+            </div>
+            <div class="form-group">
+                <label for="faceImage">🖼️ Upload Face Image (optional)</label>
+                <input type="file" id="faceImage" name="faceImage" accept="image/*">
+            </div>
+            <button type="submit" class="generate-btn">✨ Generate</button>
+        </form>
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(form);
-            const data = {
-                topic: formData.get('topic').trim()
-            };
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Generating script, audio, and video...</p>
+        </div>
 
-            if (!data.topic) {
-                showMessage('Please enter a topic!', 'error');
-                return;
-            }
+        <div id="message"></div>
 
-            // Show loading state
-            loading.style.display = 'block';
-            resultSection.style.display = 'none';
-            generateBtn.disabled = true;
-            messageDiv.innerHTML = '';
+        <div class="result-section" id="resultSection">
+            <h3>📝 Script</h3>
+            <textarea id="scriptOutput" class="script-output" readonly></textarea>
 
-            try {
-                const response = await fetch('/generate-script', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
+            <div class="audio-section">
+                <h3>🔊 Audio</h3>
+                <audio id="audioPlayer" controls style="width:100%;"></audio>
+            </div>
 
-                const result = await response.json();
+            <div class="video-section" id="videoSection" style="display:none;">
+                <h3>🎬 Video</h3>
+                <video id="videoPlayer" controls width="480"></video>
+            </div>
+        </div>
+    </div>
+</div>
 
-                if (result.success) {
-                    scriptOutput.value = result.script;
-                    resultSection.style.display = 'block';
-                    showMessage('Script & Audio generated successfully! 🎉', 'success');
+<script>
+const form = document.getElementById('scriptForm');
+const loading = document.getElementById('loading');
+const resultSection = document.getElementById('resultSection');
+const scriptOutput = document.getElementById('scriptOutput');
+const audioPlayer = document.getElementById('audioPlayer');
+const videoPlayer = document.getElementById('videoPlayer');
+const videoSection = document.getElementById('videoSection');
+const messageDiv = document.getElementById('message');
 
-                    // 👉 Set the audio file source
-                    audioPlayer.src = result.audio_url;
-                    audioPlayer.load();
-                    audioPlayer.play().catch(() => {}); // autoplay may be blocked, ignore
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    messageDiv.textContent = '';
+    resultSection.style.display = 'none';
+    loading.style.display = 'block';
 
-                    // Scroll to results
-                    resultSection.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                    showMessage(`Error: ${result.error}`, 'error');
-                }
+    const topic = document.getElementById('topic').value.trim();
+    const faceFile = document.getElementById('faceImage').files[0];
 
-            } catch (error) {
-                showMessage(`Network error: ${error.message}`, 'error');
-            } finally {
-                loading.style.display = 'none';
-                generateBtn.disabled = false;
-            }
+    try {
+        let facePath = "";
+        if (faceFile) {
+            const fd = new FormData();
+            fd.append("face", faceFile);
+            const uploadRes = await fetch("/upload-face", { method: "POST", body: fd });
+            const uploadData = await uploadRes.json();
+            if (!uploadData.success) throw new Error(uploadData.error);
+            facePath = uploadData.file_path;
+        }
+
+        const genRes = await fetch("/generate-script", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ topic, face_path: facePath })
         });
+        const result = await genRes.json();
 
-        function copyScript() {
-            scriptOutput.select();
-            document.execCommand('copy');
-            showMessage('Script copied to clipboard! 📋', 'success');
-        }
+        loading.style.display = 'none';
 
-        function clearResults() {
-            resultSection.style.display = 'none';
-            scriptOutput.value = '';
-            messageDiv.innerHTML = '';
-            audioPlayer.src = '';
-            form.reset();
-        }
-
-        function showMessage(text, type) {
-            const className = type === 'error' ? 'error-message' : 'success-message';
-            messageDiv.innerHTML = `<div class="${className}">${text}</div>`;
-            
-            if (type === 'success') {
-                setTimeout(() => {
-                    messageDiv.innerHTML = '';
-                }, 3000);
+        if (result.success) {
+            scriptOutput.value = result.script;
+            audioPlayer.src = result.audio_url;
+            resultSection.style.display = 'block';
+            if (result.video_url) {
+                videoPlayer.src = result.video_url;
+                videoSection.style.display = 'block';
+            } else {
+                videoSection.style.display = 'none';
             }
+            messageDiv.innerHTML = '<div class="success-message">✅ Generated successfully!</div>';
+        } else {
+            messageDiv.innerHTML = `<div class="error-message">❌ ${result.error}</div>`;
         }
-
-        // Auto-focus on topic input
-        document.getElementById('topic').focus();
-    </script>
+    } catch (err) {
+        loading.style.display = 'none';
+        messageDiv.innerHTML = `<div class="error-message">❌ ${err.message}</div>`;
+    }
+});
+</script>
 </body>
 </html>
