@@ -82,5 +82,5 @@ logs/
 
 # Generated files
 runs/
-output/
+outputs/
 generated_scripts/

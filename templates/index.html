@@ -1,370 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Educational Video Script Generator</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #ff6b6b, #feca57);
-            color: white;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-            font-size: 1.1em;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e8ed;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .generate-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 18px;
-            font-size: 1.2em;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 10px;
-        }
-
-        .generate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .generate-btn:disabled {
-            background: #cccccc;
-            transform: none;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 30px;
-            color: #666;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .result-section {
-            display: none;
-            margin-top: 30px;
-            padding: 25px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            border-left: 5px solid #667eea;
-        }
-
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .result-header h3 {
-            color: #333;
-            font-size: 1.3em;
-        }
-
-        .script-output {
-            width: 100%;
-            min-height: 200px;
-            padding: 15px;
-            border: 1px solid #e1e8ed;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            background: white;
-            resize: vertical;
-        }
-
-        .audio-section {
-            margin-top: 20px;
-            padding-top: 10px;
-        }
-
-        .action-buttons {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .btn-copy {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-copy:hover {
-            background: #218838;
-        }
-
-        .btn-clear {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-clear:hover {
-            background: #c82333;
-        }
-
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 5px solid #dc3545;
-            margin-top: 20px;
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 5px solid #28a745;
-            margin-top: 20px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Educational Video Generator</title>
+<style>
+body { font-family: sans-serif; background:#f0f2f5; padding:20px; }
+.container { max-width:800px; margin:auto; background:white; padding:30px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.1); }
+h1 { text-align:center; margin-bottom:20px; }
+input, button { width:100%; padding:12px; margin-bottom:15px; border-radius:8px; border:1px solid #ccc; }
+button { background:#667eea; color:white; cursor:pointer; }
+textarea { width:100%; min-height:200px; margin-bottom:15px; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🎬 Educational Video Script Generator</h1>
-            <p>Create engaging educational scripts with AI + Audio</p>
-        </div>
+<div class="container">
+<h1>🎬 Educational Video Generator</h1>
 
-        <div class="content">
-            <form id="scriptForm">
-                <div class="form-group">
-                    <label for="topic">📚 Topic</label>
-                    <input type="text" id="topic" name="topic" placeholder="e.g., Photosynthesis, Ancient Rome, Machine Learning..." required>
-                </div>
-             
-                <button type="submit" class="generate-btn" id="generateBtn">
-                    ✨ Generate Script & Audio
-                </button>
-            </form>
+<form id="scriptForm" enctype="multipart/form-data">
+    <input type="text" id="topic" placeholder="Enter topic" required>
+    <input type="file" id="faceImage" accept="image/*">
+    <button type="submit">Generate</button>
+</form>
 
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>Creating your educational script and audio...</p>
-                <small>This may take 10-30 seconds</small>
-            </div>
+<div id="loading" style="display:none;">Generating... ⏳</div>
 
-            <div class="result-section" id="resultSection">
-                <div class="result-header">
-                    <h3>📝 Generated Script</h3>
-                </div>
-                
-                <textarea id="scriptOutput" class="script-output" readonly placeholder="Your generated script will appear here..."></textarea>
+<div id="resultSection" style="display:none;">
+    <h3>Script</h3>
+    <textarea id="scriptOutput" readonly></textarea>
 
-                <!-- 🔊 Audio Player -->
-                <div class="audio-section">
-                    <h3>🔊 Listen to the Script</h3>
-                    <audio id="audioPlayer" controls style="width:100%;">
-                        Your browser does not support the audio element.
-                    </audio>
-                </div>
+    <h3>Audio</h3>
+    <audio id="audioPlayer" controls></audio>
 
-                <div class="action-buttons">
-                    <button type="button" class="btn btn-copy" onclick="copyScript()">
-                        📋 Copy Script
-                    </button>
-                    <button type="button" class="btn btn-clear" onclick="clearResults()">
-                        🗑️ Clear
-                    </button>
-                </div>
-            </div>
+    <h3>Video</h3>
+    <video id="videoPlayer" controls width="480"></video>
+</div>
 
-            <div id="message"></div>
-        </div>
-    </div>
+<div id="message"></div>
+</div>
 
-    <script>
-        const form = document.getElementById('scriptForm');
-        const loading = document.getElementById('loading');
-        const resultSection = document.getElementById('resultSection');
-        const scriptOutput = document.getElementById('scriptOutput');
-        const generateBtn = document.getElementById('generateBtn');
-        const messageDiv = document.getElementById('message');
-        const audioPlayer = document.getElementById('audioPlayer');
+<script>
+const form = document.getElementById('scriptForm');
+const loading = document.getElementById('loading');
+const resultSection = document.getElementById('resultSection');
+const scriptOutput = document.getElementById('scriptOutput');
+const audioPlayer = document.getElementById('audioPlayer');
+const videoPlayer = document.getElementById('videoPlayer');
+const messageDiv = document.getElementById('message');
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData(form);
-            const data = {
-                topic: formData.get('topic').trim()
-            };
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loading.style.display = 'block';
+    resultSection.style.display = 'none';
+    messageDiv.textContent = '';
 
-            if (!data.topic) {
-                showMessage('Please enter a topic!', 'error');
-                return;
-            }
+    const topic = document.getElementById('topic').value.trim();
+    const faceFile = document.getElementById('faceImage').files[0];
 
-            // Show loading state
-            loading.style.display = 'block';
-            resultSection.style.display = 'none';
-            generateBtn.disabled = true;
-            messageDiv.innerHTML = '';
+    let presenter_filename = null;
 
-            try {
-                const response = await fetch('/generate-script', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
+    try {
+        if(faceFile){
+            const fd = new FormData();
+            fd.append("presenter_image", faceFile);
+            const uploadRes = await fetch("/upload-presenter", { method:"POST", body:fd });
+            const uploadData = await uploadRes.json();
+            if(!uploadData.success) throw new Error(uploadData.error);
+            presenter_filename = uploadData.filename;
+        }
 
-                const result = await response.json();
-
-                if (result.success) {
-                    scriptOutput.value = result.script;
-                    resultSection.style.display = 'block';
-                    showMessage('Script & Audio generated successfully! 🎉', 'success');
-
-                    // 👉 Set the audio file source
-                    audioPlayer.src = result.audio_url;
-                    audioPlayer.load();
-                    audioPlayer.play().catch(() => {}); // autoplay may be blocked, ignore
-
-                    // Scroll to results
-                    resultSection.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                    showMessage(`Error: ${result.error}`, 'error');
-                }
-
-            } catch (error) {
-                showMessage(`Network error: ${error.message}`, 'error');
-            } finally {
-                loading.style.display = 'none';
-                generateBtn.disabled = false;
-            }
+        const genRes = await fetch("/generate-video", {
+            method:"POST",
+            headers: { "Content-Type":"application/json" },
+            body: JSON.stringify({ topic, presenter_image: presenter_filename })
         });
 
-        function copyScript() {
-            scriptOutput.select();
-            document.execCommand('copy');
-            showMessage('Script copied to clipboard! 📋', 'success');
+        const result = await genRes.json();
+        loading.style.display = 'none';
+
+        if(result.success){
+            scriptOutput.value = result.script;
+            audioPlayer.src = result.audio_url;
+            videoPlayer.src = result.video_url;
+            resultSection.style.display = 'block';
+        } else {
+            messageDiv.textContent = "Error: " + result.error;
         }
 
-        function clearResults() {
-            resultSection.style.display = 'none';
-            scriptOutput.value = '';
-            messageDiv.innerHTML = '';
-            audioPlayer.src = '';
-            form.reset();
-        }
-
-        function showMessage(text, type) {
-            const className = type === 'error' ? 'error-message' : 'success-message';
-            messageDiv.innerHTML = `<div class="${className}">${text}</div>`;
-            
-            if (type === 'success') {
-                setTimeout(() => {
-                    messageDiv.innerHTML = '';
-                }, 3000);
-            }
-        }
-
-        // Auto-focus on topic input
-        document.getElementById('topic').focus();
-    </script>
+    } catch(err){
+        loading.style.display = 'none';
+        messageDiv.textContent = "Error: " + err.message;
+    }
+});
+</script>
 </body>
 </html>
