@@ -83,4 +83,10 @@ logs/
 # Generated files
 runs/
 outputs/
+videos/
+assets/presenters
 generated_scripts/
+myenv/
+sadtalker/venv_sadtalker_py311/gfpgan/weights/*.pth
+gfpgan/weights/*.pth
+gfpgan/weights/*.pth

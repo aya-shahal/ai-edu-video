@@ -1,97 +1,1087 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Educational Video Generator</title>
-<style>
-body { font-family: sans-serif; background:#f0f2f5; padding:20px; }
-.container { max-width:800px; margin:auto; background:white; padding:30px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.1); }
-h1 { text-align:center; margin-bottom:20px; }
-input, button { width:100%; padding:12px; margin-bottom:15px; border-radius:8px; border:1px solid #ccc; }
-button { background:#667eea; color:white; cursor:pointer; }
-textarea { width:100%; min-height:200px; margin-bottom:15px; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Video Generator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #000000;
+      --secondary: #1a1a1a;
+      --accent: #2563eb;
+      --text: #0a0a0a;
+      --text-secondary: #666666;
+      --border: #e5e5e5;
+      --bg: #ffffff;
+      --bg-secondary: #f9fafb;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.03;
+      background: radial-gradient(circle at 20% 50%, var(--accent) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, var(--primary) 0%, transparent 50%);
+      animation: bgFloat 20s ease-in-out infinite;
+    }
+
+    @keyframes bgFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -30px) scale(1.1); }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    header.scrolled {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: translateY(-2px);
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-icon::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transform: rotate(45deg);
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    main {
+      padding: 80px 0 100px;
+      min-height: calc(100vh - 140px);
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 80px;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 56px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--text-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .subtitle {
+      font-size: 20px;
+      color: var(--text-secondary);
+      max-width: 650px;
+      margin: 0 auto;
+      line-height: 1.6;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    .generator-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px;
+      max-width: 1400px;
+      margin: 0 auto;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 20px 60px rgba(0, 0, 0, 0.03);
+      animation: fadeInUp 0.8s ease-out 0.6s both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .generator-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+      background-size: 200% 100%;
+      animation: gradientSlide 3s linear infinite;
+    }
+
+    @keyframes gradientSlide {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+
+    .content-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .input-column {
+      position: sticky;
+      top: 100px;
+    }
+
+    .output-column {
+      min-height: 400px;
+    }
+
+    .form-group {
+      margin-bottom: 36px;
+      animation: fadeInUp 0.6s ease-out both;
+    }
+
+    .form-group:nth-child(1) { animation-delay: 0.7s; }
+    .form-group:nth-child(2) { animation-delay: 0.8s; }
+    .form-group:nth-child(3) { animation-delay: 0.9s; }
+
+    label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .label-icon {
+      font-size: 18px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 16px 18px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: var(--bg);
+      color: var(--text);
+      resize: vertical;
+      min-height: 140px;
+      line-height: 1.6;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04);
+      transform: translateY(-2px);
+    }
+
+    textarea::placeholder {
+      color: #9ca3af;
+    }
+
+    .voice-selection {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 12px;
+    }
+
+    .voice-option {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .voice-option input[type="radio"] {
+      display: none;
+    }
+
+    .voice-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 18px 16px;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--text);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .voice-label::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+      transition: left 0.5s;
+      z-index: 1;
+    }
+
+    .voice-option input[type="radio"]:checked + .voice-label::before {
+      left: 100%;
+    }
+
+    .voice-icon {
+      font-size: 28px;
+      transition: transform 0.3s ease;
+    }
+
+    .voice-label:hover {
+      background: #f0f0f0;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .voice-option input[type="radio"]:checked + .voice-label {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      font-weight: 700;
+    }
+
+    .voice-option input[type="radio"]:checked + .voice-label .voice-icon {
+      transform: scale(1.15) rotate(10deg);
+    }
+
+    .voice-name {
+      font-size: 12px;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    .voice-option input[type="radio"]:checked + .voice-label .voice-name {
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    .upload-wrapper {
+      margin-top: 14px;
+    }
+
+    .btn-upload {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 24px;
+      background: var(--bg-secondary);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      color: var(--text);
+      width: 100%;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-upload::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.03), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-upload:hover::before {
+      left: 100%;
+    }
+
+    .btn-upload:hover {
+      background: #f3f4f6;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .upload-hint {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .preview-container {
+      margin-top: 20px;
+      position: relative;
+      max-width: 320px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      animation: scaleIn 0.3s ease-out;
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .preview-container img {
+      width: 100%;
+      display: block;
+    }
+
+    .btn-remove {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      font-weight: 600;
+    }
+
+    .btn-remove:hover {
+      background: rgba(0, 0, 0, 1);
+      transform: scale(1.1) rotate(90deg);
+    }
+
+    .btn {
+      padding: 16px 32px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: #ffffff;
+      width: 100%;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      animation: fadeInUp 0.6s ease-out 1s both;
+    }
+
+    .btn-primary::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn-primary:hover:not(:disabled)::before {
+      left: 100%;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-icon {
+      font-size: 20px;
+      transition: transform 0.3s;
+    }
+
+    .btn-primary:hover:not(:disabled) .btn-icon {
+      transform: translateX(4px);
+    }
+
+    .loading {
+      display: none;
+      align-items: center;
+      gap: 14px;
+      padding: 28px;
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, #f3f4f6 100%);
+      border-radius: 12px;
+      margin-top: 28px;
+      border: 1px solid var(--border);
+    }
+
+    .loading.active {
+      display: flex;
+      animation: fadeInUp 0.3s ease-out;
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+      animation: progressAnimation 2s ease-in-out infinite;
+    }
+
+    @keyframes progressAnimation {
+      0% { width: 0%; }
+      50% { width: 70%; }
+      100% { width: 100%; }
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 500px;
+      color: var(--text-secondary);
+      text-align: center;
+      gap: 16px;
+    }
+
+    .empty-state-icon {
+      font-size: 64px;
+      opacity: 0.3;
+    }
+
+    .empty-state-text {
+      font-size: 16px;
+      max-width: 300px;
+    }
+
+    .result-section {
+      display: none;
+    }
+
+    .result-section.active {
+      display: block;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .success-icon {
+      font-size: 28px;
+      animation: bounce 0.6s ease-out;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .result-header h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .video-container {
+      background: #000000;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+
+    .video-container::before {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, var(--primary), var(--accent), var(--primary));
+      border-radius: 16px;
+      z-index: -1;
+      opacity: 0.5;
+      filter: blur(10px);
+    }
+
+    video {
+      width: 100%;
+      display: block;
+      border-radius: 16px;
+    }
+
+    .error-message {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+      display: none;
+      animation: shake 0.5s ease-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .error-message.active {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 14px;
+      background: var(--bg-secondary);
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    @media (max-width: 1024px) {
+      .content-wrapper {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .input-column {
+        position: static;
+      }
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 40px;
+      }
+      .subtitle {
+        font-size: 18px;
+      }
+      .generator-card {
+        padding: 32px 24px;
+      }
+      main {
+        padding: 40px 0 60px;
+      }
+      .hero {
+        margin-bottom: 50px;
+      }
+      .voice-selection {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-<h1>🎬 Educational Video Generator</h1>
+  <div class="bg-animation"></div>
 
-<form id="scriptForm" enctype="multipart/form-data">
-    <input type="text" id="topic" placeholder="Enter topic" required>
-    <input type="file" id="faceImage" accept="image/*">
-    <button type="submit">Generate</button>
-</form>
+  <header id="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon">V</div>
+          <span>AI Video Generator</span>
+        </div>
+      </div>
+    </div>
+  </header>
 
-<div id="loading" style="display:none;">Generating... ⏳</div>
+  <main>
+    <div class="container">
+      <div class="hero">
+        <h1>Create Educational Videos with AI</h1>
+        <p class="subtitle">
+          Transform your ideas into professional AI-powered educational videos with realistic presenters in seconds
+        </p>
+      </div>
 
-<div id="resultSection" style="display:none;">
-    <h3>Script</h3>
-    <textarea id="scriptOutput" readonly></textarea>
+      <div class="generator-card">
+        <div class="content-wrapper">
+          <div class="input-column">
+            <form id="videoForm">
+              <div class="form-group">
+                <label for="topic">
+                  <span class="label-icon">💡</span>
+                  <span>What would you like to teach?</span>
+                </label>
+                <textarea id="topic" name="topic"
+                  placeholder="Describe your topic in detail... For example: 'Explain the water cycle and its importance to our ecosystem'"
+                  required></textarea>
+              </div>
 
-    <h3>Audio</h3>
-    <audio id="audioPlayer" controls></audio>
+              <div class="form-group">
+                <label>
+                  <span class="label-icon">👤</span>
+                  <span>Presenter Image</span>
+                </label>
+                <div class="upload-wrapper">
+                  <input type="file" id="presenterUpload" accept="image/*" style="display: none" />
+                  <button type="button" class="btn-upload" id="uploadBtn">
+                    <span>📤</span>
+                    <span>Upload Presenter Image</span>
+                  </button>
+                  <p class="upload-hint">Upload a portrait image to use as your video presenter</p>
+                  <div class="preview-container" id="previewContainer" style="display: none">
+                    <img id="imagePreview" alt="Presenter Preview" />
+                    <button type="button" class="btn-remove" id="removeBtn" aria-label="Remove image">✕</button>
+                  </div>
+                </div>
+              </div>
 
-    <h3>Video</h3>
-    <video id="videoPlayer" controls width="480"></video>
+              <div class="form-group">
+                <label>
+                  <span class="label-icon">🎙️</span>
+                  <span>Select Voice</span>
+                </label>
+                <div class="voice-selection">
+                 <div class="voice-option">
+  <input type="radio" id="voice-jenny" name="voice" value="jenny" checked />
+  <label for="voice-jenny" class="voice-label">
+    <span class="voice-icon">👩</span>
+    <span class="voice-name">Jenny</span>
+  </label>
+</div>
+<div class="voice-option">
+  <input type="radio" id="voice-aria" name="voice" value="aria" />
+  <label for="voice-aria" class="voice-label">
+    <span class="voice-icon">👱‍♀️</span>
+    <span class="voice-name">Aria</span>
+  </label>
+</div>
+<div class="voice-option">
+  <input type="radio" id="voice-guy" name="voice" value="guy" />
+  <label for="voice-guy" class="voice-label">
+    <span class="voice-icon">👨</span>
+    <span class="voice-name">Guy</span>
+  </label>
 </div>
 
-<div id="message"></div>
-</div>
+                </div>
+              </div>
 
-<script>
-const form = document.getElementById('scriptForm');
-const loading = document.getElementById('loading');
-const resultSection = document.getElementById('resultSection');
-const scriptOutput = document.getElementById('scriptOutput');
-const audioPlayer = document.getElementById('audioPlayer');
-const videoPlayer = document.getElementById('videoPlayer');
-const messageDiv = document.getElementById('message');
+              <button type="submit" class="btn btn-primary" id="generateBtn">
+                <span>Generate Video</span>
+                <span class="btn-icon">→</span>
+              </button>
+            </form>
 
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    loading.style.display = 'block';
-    resultSection.style.display = 'none';
-    messageDiv.textContent = '';
+            <div class="loading" id="loadingState">
+              <div class="spinner"></div>
+              <div>
+                <div class="loading-text" id="loadingText">
+                  Generating your video... This may take a minute.
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill"></div>
+                </div>
+              </div>
+            </div>
 
-    const topic = document.getElementById('topic').value.trim();
-    const faceFile = document.getElementById('faceImage').files[0];
+            <div class="error-message" id="errorMessage">
+              <span>⚠️</span>
+              <span id="errorText"></span>
+            </div>
+          </div>
 
-    let presenter_filename = null;
+          <div class="output-column">
+            <div class="empty-state" id="emptyState">
+              <div class="empty-state-icon">🎬</div>
+              <div class="empty-state-text">Your generated video will appear here</div>
+            </div>
 
-    try {
-        if(faceFile){
-            const fd = new FormData();
-            fd.append("presenter_image", faceFile);
-            const uploadRes = await fetch("/upload-presenter", { method:"POST", body:fd });
-            const uploadData = await uploadRes.json();
-            if(!uploadData.success) throw new Error(uploadData.error);
-            presenter_filename = uploadData.filename;
+            <div class="result-section" id="resultSection">
+              <div class="result-header">
+                <span class="success-icon">✨</span>
+                <h3>Your Video is Ready!</h3>
+              </div>
+              <div class="video-container">
+                <video id="resultVideo" controls></video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <p>Powered by Advanced AI • Generate professional educational content instantly</p>
+        <div class="footer-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Support</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    let uploadedPresenterFilename = null;
+    let pollingInterval = null;
+    const POLLING_RATE_MS = 5000;
+
+    const videoForm = document.getElementById('videoForm');
+    const generateBtn = document.getElementById('generateBtn');
+    const loadingState = document.getElementById('loadingState');
+    const loadingText = document.getElementById('loadingText');
+    const errorMessage = document.getElementById('errorMessage');
+    const errorText = document.getElementById('errorText');
+    const resultSection = document.getElementById('resultSection');
+    const emptyState = document.getElementById('emptyState');
+    const videoPlayer = document.getElementById('resultVideo');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const presenterUpload = document.getElementById('presenterUpload');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewContainer = document.getElementById('previewContainer');
+    const removeBtn = document.getElementById('removeBtn');
+
+    function resetUI() {
+      loadingState.classList.remove('active');
+      resultSection.classList.remove('active');
+      errorMessage.classList.remove('active');
+      emptyState.style.display = 'flex';
+      generateBtn.disabled = false;
+      clearInterval(pollingInterval);
+    }
+
+    function handleSuccess(videoPath) {
+      resetUI();
+      emptyState.style.display = 'none';
+      videoPlayer.src = videoPath.startsWith('/') ? videoPath : '/' + videoPath;
+      videoPlayer.load();
+      resultSection.classList.add('active');
+      console.log("Video available at:", videoPath);
+    }
+
+    function handleFailure(message) {
+      resetUI();
+      errorText.textContent = message || "An unknown error occurred during video generation.";
+      errorMessage.classList.add('active');
+      console.error("Video Generation Failed:", message);
+    }
+
+    function startPolling(jobId) {
+      console.log(`Starting poll for Job ID: ${jobId}`);
+
+      pollingInterval = setInterval(async () => {
+        try {
+          const response = await fetch(`/check-status/${jobId}`);
+
+          if (!response.ok) {
+            console.warn(`Polling response not OK (${response.status}). Will retry.`);
+            return;
+          }
+
+          const statusData = await response.json();
+          loadingText.textContent = statusData.result || 'Processing...';
+
+          if (statusData.status === 'complete') {
+            clearInterval(pollingInterval);
+            handleSuccess(statusData.result);
+          } else if (statusData.status === 'error') {
+            clearInterval(pollingInterval);
+            handleFailure(statusData.result);
+          }
+
+        } catch (e) {
+          console.error("Polling Error:", e);
         }
+      }, POLLING_RATE_MS);
+    }
 
-        const genRes = await fetch("/generate-video", {
-            method:"POST",
-            headers: { "Content-Type":"application/json" },
-            body: JSON.stringify({ topic, presenter_image: presenter_filename })
+    videoForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      resetUI();
+      emptyState.style.display = 'none';
+      loadingState.classList.add('active');
+      generateBtn.disabled = true;
+
+      const topic = document.getElementById('topic').value;
+      const voice = document.querySelector('input[name="voice"]:checked').value;
+
+      if (!uploadedPresenterFilename) {
+        handleFailure("Please upload a presenter image before generating the video.");
+        return;
+      }
+
+      try {
+        const response = await fetch('/generate-video', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            topic: topic,
+            voice: voice,
+            presenter_image: uploadedPresenterFilename
+          })
         });
 
-        const result = await genRes.json();
-        loading.style.display = 'none';
+        const data = await response.json();
 
-        if(result.success){
-            scriptOutput.value = result.script;
-            audioPlayer.src = result.audio_url;
-            videoPlayer.src = result.video_url;
-            resultSection.style.display = 'block';
+        if (data.success && data.job_id) {
+          startPolling(data.job_id);
         } else {
-            messageDiv.textContent = "Error: " + result.error;
+          handleFailure(data.error || "Failed to start generation job.");
+        }
+      } catch (e) {
+        handleFailure(`Connection to server failed: ${e.message}`);
+      }
+    });
+
+    uploadBtn.addEventListener('click', () => {
+      presenterUpload.click();
+    });
+
+    presenterUpload.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('presenter_image', file);
+
+      uploadBtn.textContent = 'Uploading...';
+      uploadBtn.disabled = true;
+
+      try {
+        const response = await fetch('/upload-presenter', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+        uploadBtn.disabled = false;
+
+        if (data.success) {
+          uploadedPresenterFilename = data.filename;
+
+          const imageUrl = URL.createObjectURL(file);
+          imagePreview.src = imageUrl;
+          previewContainer.style.display = 'block';
+          uploadBtn.style.display = 'none';
+
+          const suggestedVoice = document.getElementById(`voice-${data.suggested_voice}`);
+          if (suggestedVoice) {
+            suggestedVoice.checked = true;
+          }
+
+          console.log(`Upload Success. Suggested Voice: ${data.suggested_voice}`);
+        } else {
+          alert(`Upload failed: ${data.error}`);
         }
 
-    } catch(err){
-        loading.style.display = 'none';
-        messageDiv.textContent = "Error: " + err.message;
-    }
-});
-</script>
+      } catch (error) {
+        uploadBtn.disabled = false;
+        alert(`An error occurred during file upload: ${error}`);
+      }
+      
+      uploadBtn.textContent = '📤 Upload Presenter Image';
+    });
+
+    removeBtn.addEventListener('click', () => {
+      uploadedPresenterFilename = null;
+      imagePreview.src = '';
+      previewContainer.style.display = 'none';
+      uploadBtn.style.display = 'flex';
+      presenterUpload.value = '';
+      console.log("Image removed.");
+    });
+
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    resetUI();
+  </script>
 </body>
 </html>

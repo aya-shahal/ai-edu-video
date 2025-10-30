@@ -3,9 +3,9 @@ import os
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 
-load_dotenv()
 
-def generate_script_api(topic, duration_seconds=50, audience="high school"):
+
+def generate_script_api(topic, duration_seconds=5, audience="high school"):
     HF_TOKEN = os.environ.get("HF_TOKEN")
     assert HF_TOKEN
     
