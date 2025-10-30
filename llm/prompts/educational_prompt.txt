@@ -1,7 +1,0 @@
-You are a skilled teacher. Create a short educational script about "{topic}".
-Audience: {audience}.
-Target duration: {duration_seconds} seconds.
-Structure:
-- A 1-sentence hook
-- 3–4 key points
-- A 1-sentence takeaway
