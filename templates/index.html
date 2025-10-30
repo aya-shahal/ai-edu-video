@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Educational Video Generator</title>
+<style>
+body { font-family: sans-serif; background:#f0f2f5; padding:20px; }
+.container { max-width:800px; margin:auto; background:white; padding:30px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.1); }
+h1 { text-align:center; margin-bottom:20px; }
+input, button { width:100%; padding:12px; margin-bottom:15px; border-radius:8px; border:1px solid #ccc; }
+button { background:#667eea; color:white; cursor:pointer; }
+textarea { width:100%; min-height:200px; margin-bottom:15px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎬 Educational Video Generator</h1>
+
+<form id="scriptForm" enctype="multipart/form-data">
+    <input type="text" id="topic" placeholder="Enter topic" required>
+    <input type="file" id="faceImage" accept="image/*">
+    <button type="submit">Generate</button>
+</form>
+
+<div id="loading" style="display:none;">Generating... ⏳</div>
+
+<div id="resultSection" style="display:none;">
+    <h3>Script</h3>
+    <textarea id="scriptOutput" readonly></textarea>
+
+    <h3>Audio</h3>
+    <audio id="audioPlayer" controls></audio>
+
+    <h3>Video</h3>
+    <video id="videoPlayer" controls width="480"></video>
+</div>
+
+<div id="message"></div>
+</div>
+
+<script>
+const form = document.getElementById('scriptForm');
+const loading = document.getElementById('loading');
+const resultSection = document.getElementById('resultSection');
+const scriptOutput = document.getElementById('scriptOutput');
+const audioPlayer = document.getElementById('audioPlayer');
+const videoPlayer = document.getElementById('videoPlayer');
+const messageDiv = document.getElementById('message');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loading.style.display = 'block';
+    resultSection.style.display = 'none';
+    messageDiv.textContent = '';
+
+    const topic = document.getElementById('topic').value.trim();
+    const faceFile = document.getElementById('faceImage').files[0];
+
+    let presenter_filename = null;
+
+    try {
+        if(faceFile){
+            const fd = new FormData();
+            fd.append("presenter_image", faceFile);
+            const uploadRes = await fetch("/upload-presenter", { method:"POST", body:fd });
+            const uploadData = await uploadRes.json();
+            if(!uploadData.success) throw new Error(uploadData.error);
+            presenter_filename = uploadData.filename;
+        }
+
+        const genRes = await fetch("/generate-video", {
+            method:"POST",
+            headers: { "Content-Type":"application/json" },
+            body: JSON.stringify({ topic, presenter_image: presenter_filename })
+        });
+
+        const result = await genRes.json();
+        loading.style.display = 'none';
+
+        if(result.success){
+            scriptOutput.value = result.script;
+            audioPlayer.src = result.audio_url;
+            videoPlayer.src = result.video_url;
+            resultSection.style.display = 'block';
+        } else {
+            messageDiv.textContent = "Error: " + result.error;
+        }
+
+    } catch(err){
+        loading.style.display = 'none';
+        messageDiv.textContent = "Error: " + err.message;
+    }
+});
+</script>
+</body>
+</html>
