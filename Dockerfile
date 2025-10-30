@@ -32,9 +32,8 @@ RUN python3 -m pip install --upgrade pip setuptools wheel
 # -----------------------------------------------------------------------------
 # 5. Install pre-built dlib wheel (avoids compilation failure on Render)
 # -----------------------------------------------------------------------------
-RUN python3 -m pip install https://github.com/ageitgey/dlib-models/releases/download/v19.24/dlib-19.24.0-cp310-cp310-linux_x86_64.whl
-
-
+RUN python3 -m pip install dlib==19.24.2 --only-binary :all:
+    
 # -----------------------------------------------------------------------------
 # 6. Install PyTorch stack (CUDA 12.1 compatible + SadTalker safe)
 # -----------------------------------------------------------------------------
