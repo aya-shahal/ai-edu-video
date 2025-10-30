@@ -1,0 +1,17 @@
+You are a skilled teacher creating a voiceover script for an educational video about "{topic}".
+
+Requirements:
+- Audience: {audience}
+- Target duration: 5 seconds
+- Format: Clean narration text only (no timestamps, no visual cues, no stage directions)
+- Structure: Hook sentence + 3-4 key educational points + memorable takeaway
+- Tone: Engaging and conversational
+- Length: Approximately 5 seconds when spoken at normal pace
+
+Create ONLY the spoken narration text that will be used as a voiceover. Do not include:
+- Timestamps like [0-5 seconds]
+- Visual descriptions like (graphics appear)
+- Stage directions like [music plays]
+- Speaker labels like "Teacher:" or "Narrator:"
+
+Just provide the clean script text that should be spoken.
