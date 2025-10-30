@@ -7,7 +7,6 @@ edge-tts
 torch
 torchvision
 torchaudio
-dlib
 opencv-python
 numpy==1.26.4  # pinned for SadTalker
 gunicorn

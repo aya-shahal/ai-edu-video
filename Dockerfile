@@ -30,33 +30,35 @@ COPY templates/ /app/templates/
 RUN python3 -m pip install --upgrade pip setuptools wheel
 
 # -----------------------------------------------------------------------------
-# 5. Install PyTorch stack (CUDA 12.1 compatible + SadTalker safe)
+# 5. Install pre-built dlib wheel (avoids compilation failure on Render)
 # -----------------------------------------------------------------------------
-# These versions are confirmed to work with SadTalker, GFPGAN, and basicsr
-# Install PyTorch stack (CUDA 12.1 compatible)
+RUN python3 -m pip install dlib==19.24.0
+
+# -----------------------------------------------------------------------------
+# 6. Install PyTorch stack (CUDA 12.1 compatible + SadTalker safe)
+# -----------------------------------------------------------------------------
 RUN python3 -m pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 \
     --index-url https://download.pytorch.org/whl/cu121
 
 # -----------------------------------------------------------------------------
-# 6. Install general and SadTalker dependencies
+# 7. Install general and SadTalker dependencies
 # -----------------------------------------------------------------------------
 RUN python3 -m pip install -r requirements.txt
 RUN if [ -f /app/sadtalker/requirements.txt ]; then python3 -m pip install -r /app/sadtalker/requirements.txt; fi
 
 # -----------------------------------------------------------------------------
-# 7. DeepFace + TensorFlow (CPU fallback only)
+# 8. DeepFace + TensorFlow (CPU fallback only)
 # -----------------------------------------------------------------------------
-# Stable combo to avoid protobuf and GPU runtime mismatches
 RUN python3 -m pip install deepface==0.0.91 tensorflow==2.11.0 protobuf==3.19.0
-# Add this line to ensure gTTS is available as the reliable TTS engine
 RUN python3 -m pip install elevenlabs==1.8.1
+
 # -----------------------------------------------------------------------------
-# 8. Transformer stack (compatible with PyTorch 2.0+)
+# 9. Transformer stack (compatible with PyTorch 2.0+)
 # -----------------------------------------------------------------------------
 RUN python3 -m pip install transformers==4.41.2
 
 # -----------------------------------------------------------------------------
-# 9. Environment configuration
+# 10. Environment configuration
 # -----------------------------------------------------------------------------
 ENV FLASK_ENV=production \
     PYTHONUNBUFFERED=1 \
@@ -65,12 +67,12 @@ ENV FLASK_ENV=production \
     MODEL_DIR=/app/models
 
 # -----------------------------------------------------------------------------
-# 10. Create cache/model directories
+# 11. Create cache/model directories
 # -----------------------------------------------------------------------------
 RUN mkdir -p ${HF_HOME} ${MODEL_DIR}
 
 # -----------------------------------------------------------------------------
-# 11. Expose port and run Flask app via Gunicorn
+# 12. Expose port and run Flask app via Gunicorn
 # -----------------------------------------------------------------------------
-EXPOSE 5051
-CMD ["gunicorn", "--bind", "0.0.0.0:5051", "app:app", "--workers", "2", "--threads", "2", "--timeout", "600"]
+EXPOSE 5054
+CMD ["gunicorn", "--bind", "0.0.0.0:5054", "app:app", "--workers", "2", "--threads", "2", "--timeout", "600"]
