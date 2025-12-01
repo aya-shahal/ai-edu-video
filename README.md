@@ -69,8 +69,7 @@ Once the models are downloaded successfully, you can integrate SadTalker into yo
 
 ### 5. Run the Full Pipeline
 From the main project folder:
-
-python main.py --topic "Neural Networks 101"
+python app.py 
 
 ### 6. Output
 - 🧾 output/script.txt — AI-generated educational script  
